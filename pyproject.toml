@@ -1,0 +1,33 @@
+[project]
+name = "cookiebot"
+description = "An API wrapper for the CookieBot API"
+requires-python = ">=3.9"
+license = {text = "MIT"}
+readme = "README.md"
+keywords = ["cookie-bot", "cookie", "api"]
+authors = [
+    { name = "tibue99" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dynamic = ["dependencies", "version"]
+
+[tool.setuptools.dynamic]
+version = {attr = "cookiebot.__version__"}
+dependencies = {file = "requirements.txt"}
+
+[project.urls]
+GitHub = "https://github.com/tibue99/cookie-api"
+CookieBot = "https://cookie-bot.xyz"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
