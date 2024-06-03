@@ -6,7 +6,7 @@ license = {text = "MIT"}
 readme = "README.md"
 keywords = ["cookie-bot", "cookie", "api"]
 authors = [
-    { name = "tibue99", name="tobfd" }
+    { name = "tibue99" }, { name="tobfd" }
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
