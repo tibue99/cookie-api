@@ -9,22 +9,22 @@ USER_NOT_FOUND_TEXT = "Could not find the user ID."
 
 class CookieAPI:
     def __init__(self, api_key: str, raise_error: bool = True):
-        self.__session: aiohttp.ClientSession | None = None
+        self._session: aiohttp.ClientSession | None = None
         self.api_key = api_key
-        self.__header = {"key": self.api_key, "accept": "application/json"}
+        self._header = {"key": self.api_key, "accept": "application/json"}
         self.raise_error = raise_error
 
-    async def __check_session(self):
-        if self.__session is None:
-            await self.__setup()
+    async def _check_session(self):
+        if self._session is None:
+            await self._setup()
 
-    async def __setup(self):
-        self.__session = aiohttp.ClientSession()
+    async def _setup(self):
+        self._session = aiohttp.ClientSession()
 
-    async def __close(self):
-        await self.__session.close()
+    async def _close(self):
+        await self._session.close()
 
-    async def __check_error(self, status_code: int, errors: dict):
+    async def _check_error(self, status_code: int, errors: dict):
         for error_code in errors.keys():
             if status_code == error_code:
                 if self.raise_error:
@@ -44,13 +44,13 @@ class CookieAPI:
         days:
             The number of days.
         """
-        await self.__check_session()
-        async with self.__session.get(
-            BASE_URL + f"/members/{guild_id}?days={days}", headers=self.__header
+        await self._check_session()
+        async with self._session.get(
+            BASE_URL + f"/members/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self.__close()
+            await self._close()
             if (
-                await self.__check_error(
+                await self._check_error(
                     response.status,
                     {401: (GuildNotFound, "The API key owner is not a member of the guild.")},
                 )
@@ -68,15 +68,13 @@ class CookieAPI:
         user_id:
             The user id id from the user.
         """
-        await self.__check_session()
-        async with self.__session.get(
-            BASE_URL + f"/stats/user/{user_id}", headers=self.__header
+        await self._check_session()
+        async with self._session.get(
+            BASE_URL + f"/stats/user/{user_id}", headers=self._header
         ) as response:
-            await self.__close()
+            await self._close()
             if (
-                await self.__check_error(
-                    response.status, {404: (UserNotFound, USER_NOT_FOUND_TEXT)}
-                )
+                await self._check_error(response.status, {404: (UserNotFound, USER_NOT_FOUND_TEXT)})
                 is False
             ):
                 return None
@@ -107,13 +105,13 @@ class CookieAPI:
             The number of days.
             Defaults to ``0``.
         """
-        await self.__check_session()
-        async with self.__session.get(
-            BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self.__header
+        await self._check_session()
+        async with self._session.get(
+            BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self.__close()
+            await self._close()
             if (
-                await self.__check_error(
+                await self._check_error(
                     response.status,
                     {
                         404: (UserNotFound, USER_NOT_FOUND_TEXT),
@@ -164,13 +162,13 @@ class CookieAPI:
             The number of days.
             Defaults to ``14``.
         """
-        await self.__check_session()
-        async with self.__session.get(
-            BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self.__header
+        await self._check_session()
+        async with self._session.get(
+            BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self.__close()
+            await self._close()
             if (
-                await self.__check_error(
+                await self._check_error(
                     response.status, {401: (GuildNotFound, GUILD_NOT_FOUND_TEXT)}
                 )
                 is False
