@@ -9,20 +9,20 @@ USER_NOT_FOUND_TEXT = "Could not find the user ID."
 
 class CookieAPI:
     def __init__(self, api_key: str, raise_error: bool = True):
-        self.session: aiohttp.ClientSession | None = None
+        self.__session: aiohttp.ClientSession | None = None
         self.api_key = api_key
-        self.header = {"key": self.api_key, "accept": "application/json"}
+        self.__header = {"key": self.api_key, "accept": "application/json"}
         self.raise_error = raise_error
 
     async def __check_session(self):
-        if self.session is None:
+        if self.__session is None:
             await self.__setup()
 
     async def __setup(self):
-        self.session = aiohttp.ClientSession()
+        self.__session = aiohttp.ClientSession()
 
     async def __close(self):
-        await self.session.close()
+        await self.__session.close()
 
     async def __check_error(self, status_code: int, errors: dict):
         for error_code in errors.keys():
@@ -45,8 +45,8 @@ class CookieAPI:
             The number of days.
         """
         await self.__check_session()
-        async with self.session.get(
-            BASE_URL + f"/members/{guild_id}?days={days}", headers=self.header
+        async with self.__session.get(
+            BASE_URL + f"/members/{guild_id}?days={days}", headers=self.__header
         ) as response:
             await self.__close()
             if (
@@ -69,8 +69,8 @@ class CookieAPI:
             The user id id from the user.
         """
         await self.__check_session()
-        async with self.session.get(
-            BASE_URL + f"/stats/user/{user_id}", headers=self.header
+        async with self.__session.get(
+            BASE_URL + f"/stats/user/{user_id}", headers=self.__header
         ) as response:
             await self.__close()
             if (
@@ -108,8 +108,8 @@ class CookieAPI:
             Defaults to ``0``.
         """
         await self.__check_session()
-        async with self.session.get(
-            BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self.header
+        async with self.__session.get(
+            BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self.__header
         ) as response:
             await self.__close()
             if (
@@ -165,8 +165,8 @@ class CookieAPI:
             Defaults to ``14``.
         """
         await self.__check_session()
-        async with self.session.get(
-            BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self.header
+        async with self.__session.get(
+            BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self.__header
         ) as response:
             await self.__close()
             if (
