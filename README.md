@@ -38,7 +38,7 @@ This prints:
 ````python
 Guild(messages={'2024-06-02': 386, '2024-06-03': 40}, total_messages=426, total_voice_minutes=2495, top_channel=1019643517573799936, top_channel_messages=40, most_active_user_day=887307645529231431, most_active_user_hour=None)
 ````
-### 
+###
 ````python
 from cookiebot import CookieAPI
 import asyncio

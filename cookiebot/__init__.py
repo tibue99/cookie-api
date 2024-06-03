@@ -1,4 +1,4 @@
 __version__ = "0.0.1"
 
 from .api import CookieAPI
-from .classes import User, UserStat, UserGuild, Guild, UserNotFound, GuildNotFound
+from .classes import Guild, GuildNotFound, User, UserGuild, UserNotFound, UserStat
