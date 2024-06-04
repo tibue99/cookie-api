@@ -1,11 +1,9 @@
 import aiohttp
 
-from .errors import GuildNotFound, NotOwner, UserNotFound
+from .errors import GuildNotFound, NotOwner, UserNotFound, CookieError
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 BASE_URL = "https://api.cookie-bot.xyz/premium"
-GUILD_NOT_FOUND_TEXT = "Could not find the guild ID."
-USER_NOT_FOUND_TEXT = "Could not find the user ID."
 
 
 class CookieAPI:
@@ -21,16 +19,12 @@ class CookieAPI:
     async def _setup(self):
         self._session = aiohttp.ClientSession()
 
-    async def _close(self):
-        await self._session.close()
-
     @staticmethod
-    async def _check_error(status_code: int, errors: dict):
+    async def _check_error(status_code: int, errors: dict[int, CookieError()]):
         for error_code in errors.keys():
             if status_code == error_code:
-                error = errors[error_code][0]
-                error_text = errors[error_code][1]
-                raise error(error_text)
+                error = errors[error_code]
+                raise error()
 
     async def get_member_count(self, guild_id: int, days: int) -> dict:
         """Indicates the number of members on the guild on the respective day.
@@ -46,8 +40,7 @@ class CookieAPI:
         async with self._session.get(
             BASE_URL + f"/members/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self._close()
-            await self._check_error(response.status, {401: (NotOwner, "The API key owner is not a member of the guild.")})
+            await self._check_error(response.status, {401: NotOwner})
             data = await response.json()
             return data
 
@@ -63,8 +56,7 @@ class CookieAPI:
         async with self._session.get(
             BASE_URL + f"/stats/user/{user_id}", headers=self._header
         ) as response:
-            await self._close()
-            await self._check_error(response.status, {404: (UserNotFound, USER_NOT_FOUND_TEXT)})
+            await self._check_error(response.status, {404: UserNotFound})
             data = await response.json()
             user = UserStats(
                 user_id,
@@ -97,13 +89,7 @@ class CookieAPI:
         async with self._session.get(
             BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self._close()
-            await self._check_error(
-                response.status,
-                {
-                    404: (UserNotFound, USER_NOT_FOUND_TEXT),
-                    401: (GuildNotFound, GUILD_NOT_FOUND_TEXT),
-                })
+            await self._check_error(response.status, {404: UserNotFound, 401: GuildNotFound})
             data = await response.json()
             if days == 0:
                 user = MemberStats(
@@ -150,10 +136,7 @@ class CookieAPI:
         async with self._session.get(
             BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self._header
         ) as response:
-            await self._close()
-            await self._check_error(
-                response.status, {401: (GuildNotFound, GUILD_NOT_FOUND_TEXT)}
-            )
+            await self._check_error(response.status, {401: GuildNotFound})
             data = await response.json()
             guild = GuildActivity(
                 days,

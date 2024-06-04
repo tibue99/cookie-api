@@ -7,12 +7,15 @@ class NotFound(CookieError):
 
 
 class UserNotFound(NotFound):
-    pass
+    def __init__(self):
+        super().__init__("Could not find the user ID.")
 
 
 class GuildNotFound(NotFound):
-    pass
+    def __init__(self):
+        super().__init__("Could not find the guild ID.")
 
 
 class NotOwner(CookieError):
-    pass
+    def __init__(self):
+        super().__init__("The API key owner is not a member of the guild.")
