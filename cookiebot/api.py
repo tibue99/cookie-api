@@ -1,6 +1,6 @@
 import aiohttp
 
-from .errors import GuildNotFound, NotOwner, UserNotFound, CookieError
+from .errors import GuildNotFound, NotOwner, UserNotFound
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 BASE_URL = "https://api.cookie-bot.xyz/premium"
@@ -20,7 +20,7 @@ class CookieAPI:
         self._session = aiohttp.ClientSession()
 
     @staticmethod
-    async def _check_error(status_code: int, errors: dict[int, CookieError()]):
+    async def _check_error(status_code: int, errors: dict):
         for error_code in errors.keys():
             if status_code == error_code:
                 error = errors[error_code]
@@ -69,11 +69,8 @@ class CookieAPI:
             )
             return user
 
-    async def get_member_activity(
-        self, user_id: int, guild_id: int, days: int = 0
-    ) -> MemberStats | MemberActivity:
-        """If days is not provided or is 0, it will return the user's level stats.
-        If days is provided, it will return the user's activity stats for the last x days.
+    async def get_member_activity(self, user_id: int, guild_id: int, days: int) -> MemberActivity:
+        """Return the user's activity stats for the last x days.
 
         Parameters
         ----------
@@ -83,7 +80,6 @@ class CookieAPI:
             The guild id from the guild.
         days:
             The number of days.
-            Defaults to ``0``.
         """
         await self._check_session()
         async with self._session.get(
@@ -91,35 +87,51 @@ class CookieAPI:
         ) as response:
             await self._check_error(response.status, {404: UserNotFound, 401: GuildNotFound})
             data = await response.json()
-            if days == 0:
-                user = MemberStats(
-                    user_id,
-                    guild_id,
-                    data.get("lvl"),
-                    data.get("xp"),
-                    data.get("msg_count"),
-                    data.get("voice_min"),
-                    data.get("voice_xp"),
-                    data.get("voice_lvl"),
-                    data.get("current_lvl_progress"),
-                    data.get("current_lvl_end"),
-                    data.get("rank"),
-                    data.get("member_count"),
-                    data.get("voice_rank"),
-                    data.get("voice_count"),
-                )
-            else:
-                user = MemberActivity(
-                    days,
-                    user_id,
-                    guild_id,
-                    data.get("days_messages"),
-                    data.get("days_voice_minutes"),
-                    data.get("days_msg_rank"),
-                    data.get("days_voice_rank"),
-                    data.get("current_voice_min"),
-                )
-            return user
+            user = MemberActivity(
+                days,
+                user_id,
+                guild_id,
+                data.get("days_messages"),
+                data.get("days_voice_minutes"),
+                data.get("days_msg_rank"),
+                data.get("days_voice_rank"),
+                data.get("current_voice_min"),
+            )
+        return user
+
+    async def get_member_stats(self, user_id: int, guild_id: int) -> MemberStats:
+        """Return the user's level stats.
+
+        Parameters
+        ----------
+        user_id:
+            The user id from the user.
+        guild_id:
+            The guild id from the guild.
+        """
+        await self._check_session()
+        async with self._session.get(
+            BASE_URL + f"/stats/user/{user_id}/{guild_id}", headers=self._header
+        ) as response:
+            await self._check_error(response.status, {404: UserNotFound, 401: GuildNotFound})
+            data = await response.json()
+            user = MemberStats(
+                user_id,
+                guild_id,
+                data.get("lvl"),
+                data.get("xp"),
+                data.get("msg_count"),
+                data.get("voice_min"),
+                data.get("voice_xp"),
+                data.get("voice_lvl"),
+                data.get("current_lvl_progress"),
+                data.get("current_lvl_end"),
+                data.get("rank"),
+                data.get("member_count"),
+                data.get("voice_rank"),
+                data.get("voice_count"),
+            )
+        return user
 
     async def get_guild_activity(self, guild_id: int, days: int = 14) -> GuildActivity:
         """Guild stats for provided days.
