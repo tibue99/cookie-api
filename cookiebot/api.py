@@ -1,6 +1,7 @@
 import aiohttp
 
-from .classes import Guild, GuildNotFound, User, UserGuild, UserNotFound, UserStat
+from .errors import GuildNotFound, NotOwner, UserNotFound
+from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 BASE_URL = "https://api.cookie-bot.xyz/premium"
 GUILD_NOT_FOUND_TEXT = "Could not find the guild ID."
@@ -28,13 +29,13 @@ class CookieAPI:
         for error_code in errors.keys():
             if status_code == error_code:
                 if self.raise_error:
-                    error = errors.get(error_code)[0]
-                    error_text = errors.get(error_code)[1]
+                    error = errors[error_code][0]
+                    error_text = errors[error_code][1]
                     raise error(error_text)
                 else:
                     return False
 
-    async def get_guild_members(self, guild_id: int, days: int) -> dict | None:
+    async def get_member_count(self, guild_id: int, days: int) -> dict | None:
         """Indicates the number of members on the guild on the respective day.
 
         Parameters
@@ -52,7 +53,7 @@ class CookieAPI:
             if (
                 await self._check_error(
                     response.status,
-                    {401: (GuildNotFound, "The API key owner is not a member of the guild.")},
+                    {401: (NotOwner, "The API key owner is not a member of the guild.")},
                 )
                 is False
             ):
@@ -60,13 +61,13 @@ class CookieAPI:
             data = await response.json()
             return data
 
-    async def get_user_stats(self, user_id: int) -> User | None:
+    async def get_user_stats(self, user_id: int) -> UserStats | None:
         """Stats for a user.
 
         Parameters
         ----------
         user_id:
-            The user id id from the user.
+            The user's ID.
         """
         await self._check_session()
         async with self._session.get(
@@ -79,7 +80,7 @@ class CookieAPI:
             ):
                 return None
             data = await response.json()
-            user = User(
+            user = UserStats(
                 user_id,
                 data.get("max_streak"),
                 data.get("streak"),
@@ -90,15 +91,16 @@ class CookieAPI:
             )
             return user
 
-    async def get_user_guild_stats(
+    async def get_member_activity(
         self, user_id: int, guild_id: int, days: int = 0
-    ) -> UserGuild | UserStat | None:
-        """If days is not provided or is 0, it will return the user's level stats. If days is provided, it will return the user's activity stats for the last x days.
+    ) -> MemberStats | MemberActivity | None:
+        """If days is not provided or is 0, it will return the user's level stats.
+        If days is provided, it will return the user's activity stats for the last x days.
 
         Parameters
         ----------
         user_id:
-            The user id id from the user.
+            The user id from the user.
         guild_id:
             The guild id from the guild.
         days:
@@ -123,7 +125,7 @@ class CookieAPI:
                 return None
             data = await response.json()
             if days == 0:
-                user = UserGuild(
+                user = MemberStats(
                     user_id,
                     guild_id,
                     data.get("lvl"),
@@ -140,7 +142,8 @@ class CookieAPI:
                     data.get("voice_count"),
                 )
             else:
-                user = UserStat(
+                user = MemberActivity(
+                    days,
                     user_id,
                     guild_id,
                     data.get("days_messages"),
@@ -151,7 +154,7 @@ class CookieAPI:
                 )
             return user
 
-    async def get_guild_stats(self, guild_id: int, days: int = 14):
+    async def get_guild_activity(self, guild_id: int, days: int = 14):
         """Guild stats for provided days.
 
         Parameters
@@ -175,7 +178,8 @@ class CookieAPI:
             ):
                 return None
             data = await response.json()
-            guild = Guild(
+            guild = GuildActivity(
+                days,
                 data.get("messages"),
                 data.get("total_messages"),
                 data.get("total_voice_min"),

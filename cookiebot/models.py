@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class User:
+class UserStats:
     user_id: int
     max_streak: int
     streak: int
@@ -13,7 +13,7 @@ class User:
 
 
 @dataclass
-class UserGuild:
+class MemberStats:
     user_id: int
     guild_id: int
     level: int
@@ -24,25 +24,27 @@ class UserGuild:
     voice_level: int
     current_level_progress: int
     current_level_end: int
-    rank: int
-    rank_total: int
+    msg_rank: int
+    msg_total_members: int
     voice_rank: int
-    voice_rank_total: int
+    voice_total_members: int
 
 
 @dataclass
-class UserStat:
+class MemberActivity:
+    days: int
     user_id: int
     guild_id: int
-    messages: int
-    voice_minutes: int
-    message_rank: int
+    msg_count: int
+    voice_min: int
+    msg_rank: int
     voice_rank: int
     current_voice_minutes: int
 
 
 @dataclass
-class Guild:
+class GuildActivity:
+    days: int
     messages: dict[str, int]
     total_messages: int
     total_voice_minutes: int
@@ -50,11 +52,3 @@ class Guild:
     top_channel_messages: int
     most_active_user_day: int | None
     most_active_user_hour: int | None
-
-
-class UserNotFound(Exception):
-    pass
-
-
-class GuildNotFound(Exception):
-    pass
