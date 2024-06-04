@@ -9,11 +9,10 @@ USER_NOT_FOUND_TEXT = "Could not find the user ID."
 
 
 class CookieAPI:
-    def __init__(self, api_key: str, raise_error: bool = True):
+    def __init__(self, api_key: str):
         self._session: aiohttp.ClientSession | None = None
         self.api_key = api_key
         self._header = {"key": self.api_key, "accept": "application/json"}
-        self.raise_error = raise_error
 
     async def _check_session(self):
         if self._session is None:
@@ -25,15 +24,13 @@ class CookieAPI:
     async def _close(self):
         await self._session.close()
 
-    async def _check_error(self, status_code: int, errors: dict):
+    @staticmethod
+    async def _check_error(status_code: int, errors: dict):
         for error_code in errors.keys():
             if status_code == error_code:
-                if self.raise_error:
-                    error = errors[error_code][0]
-                    error_text = errors[error_code][1]
-                    raise error(error_text)
-                else:
-                    return False
+                error = errors[error_code][0]
+                error_text = errors[error_code][1]
+                raise error(error_text)
 
     async def get_member_count(self, guild_id: int, days: int) -> dict | None:
         """Indicates the number of members on the guild on the respective day.
@@ -50,14 +47,7 @@ class CookieAPI:
             BASE_URL + f"/members/{guild_id}?days={days}", headers=self._header
         ) as response:
             await self._close()
-            if (
-                await self._check_error(
-                    response.status,
-                    {401: (NotOwner, "The API key owner is not a member of the guild.")},
-                )
-                is False
-            ):
-                return None
+            await self._check_error(response.status, {401: (NotOwner, "The API key owner is not a member of the guild.")})
             data = await response.json()
             return data
 
@@ -74,11 +64,7 @@ class CookieAPI:
             BASE_URL + f"/stats/user/{user_id}", headers=self._header
         ) as response:
             await self._close()
-            if (
-                await self._check_error(response.status, {404: (UserNotFound, USER_NOT_FOUND_TEXT)})
-                is False
-            ):
-                return None
+            await self._check_error(response.status, {404: (UserNotFound, USER_NOT_FOUND_TEXT)})
             data = await response.json()
             user = UserStats(
                 user_id,
@@ -112,17 +98,12 @@ class CookieAPI:
             BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self._header
         ) as response:
             await self._close()
-            if (
-                await self._check_error(
-                    response.status,
-                    {
-                        404: (UserNotFound, USER_NOT_FOUND_TEXT),
-                        401: (GuildNotFound, GUILD_NOT_FOUND_TEXT),
-                    },
-                )
-                is False
-            ):
-                return None
+            await self._check_error(
+                response.status,
+                {
+                    404: (UserNotFound, USER_NOT_FOUND_TEXT),
+                    401: (GuildNotFound, GUILD_NOT_FOUND_TEXT),
+                })
             data = await response.json()
             if days == 0:
                 user = MemberStats(
@@ -170,13 +151,9 @@ class CookieAPI:
             BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self._header
         ) as response:
             await self._close()
-            if (
-                await self._check_error(
-                    response.status, {401: (GuildNotFound, GUILD_NOT_FOUND_TEXT)}
-                )
-                is False
-            ):
-                return None
+            await self._check_error(
+                response.status, {401: (GuildNotFound, GUILD_NOT_FOUND_TEXT)}
+            )
             data = await response.json()
             guild = GuildActivity(
                 days,
