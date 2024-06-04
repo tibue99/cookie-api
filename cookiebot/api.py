@@ -32,7 +32,7 @@ class CookieAPI:
                 error_text = errors[error_code][1]
                 raise error(error_text)
 
-    async def get_member_count(self, guild_id: int, days: int) -> dict | None:
+    async def get_member_count(self, guild_id: int, days: int) -> dict:
         """Indicates the number of members on the guild on the respective day.
 
         Parameters
@@ -51,7 +51,7 @@ class CookieAPI:
             data = await response.json()
             return data
 
-    async def get_user_stats(self, user_id: int) -> UserStats | None:
+    async def get_user_stats(self, user_id: int) -> UserStats:
         """Stats for a user.
 
         Parameters
@@ -79,7 +79,7 @@ class CookieAPI:
 
     async def get_member_activity(
         self, user_id: int, guild_id: int, days: int = 0
-    ) -> MemberStats | MemberActivity | None:
+    ) -> MemberStats | MemberActivity:
         """If days is not provided or is 0, it will return the user's level stats.
         If days is provided, it will return the user's activity stats for the last x days.
 
@@ -135,7 +135,7 @@ class CookieAPI:
                 )
             return user
 
-    async def get_guild_activity(self, guild_id: int, days: int = 14):
+    async def get_guild_activity(self, guild_id: int, days: int = 14) -> GuildActivity:
         """Guild stats for provided days.
 
         Parameters
