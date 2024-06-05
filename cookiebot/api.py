@@ -11,6 +11,10 @@ from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 DEFAULT_DAYS = 14
 
 
+def _stats_dict(data: dict[str, int]) -> dict[date, int]:
+    return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in data.items()}
+
+
 class CookieAPI:
     """A class to interact with the Cookie Bot API.
 
@@ -54,7 +58,7 @@ class CookieAPI:
 
     async def _get(self, endpoint: str, stream: bool = False):
         async with self._session.get(
-            f"https://api.cookie-bot.xyz/premium/v1/{endpoint}", headers=self._header
+            f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header
         ) as response:
             if response.status == 401:
                 raise InvalidAPIKey()
@@ -92,7 +96,7 @@ class CookieAPI:
         await self._setup()
         message_data = await self._get(f"member_count/{guild_id}?days={days}")
 
-        return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in message_data.items()}
+        return _stats_dict(message_data)
 
     async def get_user_stats(self, user_id: int) -> UserStats:
         """Get the user's level stats.
@@ -151,7 +155,9 @@ class CookieAPI:
         """
         await self._setup()
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
-        return MemberActivity(days, user_id, guild_id, **data)
+        msg_activity = _stats_dict(data.pop("msg_activity"))
+        voice_activity = _stats_dict(data.pop("voice_activity"))
+        return MemberActivity(days, user_id, guild_id, msg_activity, voice_activity, **data)
 
     async def get_guild_activity(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildActivity:
         """Get the guild's activity for the provided number of days.
@@ -170,7 +176,9 @@ class CookieAPI:
         """
         await self._setup()
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
-        return GuildActivity(days, **data)
+        msg_activity = _stats_dict(data.pop("msg_activity"))
+        voice_activity = _stats_dict(data.pop("voice_activity"))
+        return GuildActivity(days, guild_id, msg_activity, voice_activity, **data)
 
     async def get_guild_image(self, guild_id: int, days: int = DEFAULT_DAYS) -> bytes:
         """Get the guild's activity image for the provided number of days.

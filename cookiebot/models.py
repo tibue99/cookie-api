@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from datetime import date
 
 
 @dataclass
@@ -35,6 +36,8 @@ class MemberActivity:
     days: int
     user_id: int
     guild_id: int
+    msg_activity: dict[date, int]
+    voice_activity: dict[date, int]
     msg_count: int
     voice_min: int
     msg_rank: int
@@ -45,7 +48,9 @@ class MemberActivity:
 @dataclass
 class GuildActivity:
     days: int
-    msg_activity: dict[str, int]
+    guild_id: int
+    msg_activity: dict[date, int]
+    voice_activity: dict[date, int]
     msg_count: int
     voice_min: int
     top_channel: int
