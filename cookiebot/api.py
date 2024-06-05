@@ -1,15 +1,34 @@
+import os
 from datetime import date, datetime
 from typing import overload
 
 import aiohttp
+from dotenv import load_dotenv
 
 from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 
 class CookieAPI:
-    def __init__(self, api_key: str):
+    """A class to interact with the Cookie Bot API.
+
+    Parameters
+    ----------
+    api_key:
+        The API key to use. If no key is provided, ``COOKIE_KEY`` is loaded from the environment.
+    """
+
+    def __init__(self, api_key: str | None = None):
         self._session: aiohttp.ClientSession | None = None
+
+        if api_key is None:
+            load_dotenv()
+            api_key = os.getenv("COOKIE_KEY")
+            if api_key is None:
+                raise InvalidAPIKey(
+                    "Please provide an API key or set the COOKIE_KEY environment variable."
+                )
+
         self._header = {"key": api_key, "accept": "application/json"}
 
     async def setup(self):
@@ -182,5 +201,5 @@ class CookieAPI:
         """
         await self.setup()
         return await self._get(
-            f"activity/member/{user_id}{guild_id}/image?days={days}", stream=True
+            f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True
         )

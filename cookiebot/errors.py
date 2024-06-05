@@ -3,8 +3,8 @@ class CookieError(Exception):
 
 
 class InvalidAPIKey(CookieError):
-    def __init__(self):
-        super().__init__("Invalid API key.")
+    def __init__(self, msg: str | None = None):
+        super().__init__(msg or "Invalid API key.")
 
 
 class NotFound(CookieError):
