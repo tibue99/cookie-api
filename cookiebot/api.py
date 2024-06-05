@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from typing import overload
 
 import aiohttp
 
@@ -18,7 +19,7 @@ class CookieAPI:
     async def close(self):
         await self._session.close()
 
-    async def _get(self, endpoint: str) -> dict:
+    async def _get(self, endpoint: str, stream: bool = False):
         async with self._session.get(
             f"https://api.cookie-bot.xyz/premium/v1/{endpoint}", headers=self._header
         ) as response:
@@ -34,6 +35,9 @@ class CookieAPI:
                 elif "guild" in message.lower():
                     raise GuildNotFound()
                 raise NotFound()
+
+            if stream:
+                return await response.read()
 
             return await response.json()
 
@@ -134,3 +138,43 @@ class CookieAPI:
         await self.setup()
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
         return GuildActivity(days, **data)
+
+    async def get_guild_image(self, guild_id: int, days: int = 14) -> bytes:
+        """Get the guild's activity image for the provided number of days.
+
+        Parameters
+        ----------
+        guild_id:
+            The guild's ID.
+        days:
+            The number of days. Defaults to ``14``.
+
+        Raises
+        ------
+        GuildNotFound:
+            The guild was not found.
+        """
+        await self.setup()
+        return await self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
+
+    async def get_member_image(self, user_id: int, guild_id: int, days: int = 14) -> bytes:
+        """Get the member's activity image for the provided number of days.
+
+        Parameters
+        ----------
+        user_id:
+            The user's ID.
+        guild_id:
+            The guild's ID.
+        days:
+            The number of days. Defaults to ``14``.
+
+        Raises
+        ------
+        UserNotFound:
+            The user was not found.
+        """
+        await self.setup()
+        return await self._get(
+            f"activity/member/{user_id}{guild_id}/image?days={days}", stream=True
+        )
