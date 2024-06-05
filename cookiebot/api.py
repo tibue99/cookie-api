@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 import aiohttp
 
 from .errors import GuildNotFound, InvalidAPIKey, NotFound, NotOwner, UserNotFound
@@ -36,7 +38,7 @@ class CookieAPI:
 
             return await response.json()
 
-    async def get_member_count(self, guild_id: int, days: int = 14) -> dict:
+    async def get_member_count(self, guild_id: int, days: int = 14) -> dict[date, int]:
         """Indicates the number of members on the guild on the respective day.
 
         Parameters
@@ -47,7 +49,9 @@ class CookieAPI:
             The number of days.
         """
         await self.setup()
-        return await self._get(f"member_count/{guild_id}?days={days}")
+        message_data = await self._get(f"member_count/{guild_id}?days={days}")
+
+        return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in message_data.items()}
 
     async def get_user_stats(self, user_id: int) -> UserStats:
         """Stats for a user.
