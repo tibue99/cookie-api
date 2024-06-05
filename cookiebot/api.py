@@ -61,7 +61,7 @@ class CookieAPI:
             elif response.status == 404:
                 response = await response.json()
                 message = response.get("detail")
-                if "user" in message.lower():
+                if "user" in message.lower() or "member" in message.lower():
                     raise UserNotFound()
                 elif "guild" in message.lower():
                     raise GuildNotFound()
