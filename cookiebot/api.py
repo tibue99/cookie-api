@@ -19,6 +19,12 @@ class CookieAPI:
     async def close(self):
         await self._session.close()
 
+    @overload
+    async def _get(self, endpoint: str) -> dict: ...
+
+    @overload
+    async def _get(self, endpoint: str, stream: bool) -> bytes: ...
+
     async def _get(self, endpoint: str, stream: bool = False):
         async with self._session.get(
             f"https://api.cookie-bot.xyz/premium/v1/{endpoint}", headers=self._header
