@@ -31,7 +31,13 @@ class CookieAPI:
 
         self._header = {"key": api_key, "accept": "application/json"}
 
-    async def setup(self):
+    async def __aenter__(self):
+        return self
+
+    async def __aexit__(self, *args):
+        await self.close()
+
+    async def _setup(self):
         if self._session is None:
             self._session = aiohttp.ClientSession()
 
@@ -81,7 +87,7 @@ class CookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self.setup()
+        await self._setup()
         message_data = await self._get(f"member_count/{guild_id}?days={days}")
 
         return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in message_data.items()}
@@ -99,7 +105,7 @@ class CookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self.setup()
+        await self._setup()
         data = await self._get(f"stats/user/{user_id}")
         return UserStats(user_id, **data)
 
@@ -118,7 +124,7 @@ class CookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self.setup()
+        await self._setup()
         data = await self._get(f"stats/member/{user_id}/{guild_id}")
         return MemberStats(user_id, guild_id, **data)
 
@@ -141,7 +147,7 @@ class CookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self.setup()
+        await self._setup()
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
         return MemberActivity(days, user_id, guild_id, **data)
 
@@ -160,7 +166,7 @@ class CookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self.setup()
+        await self._setup()
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
         return GuildActivity(days, **data)
 
@@ -179,7 +185,7 @@ class CookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self.setup()
+        await self._setup()
         return await self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
     async def get_member_image(self, user_id: int, guild_id: int, days: int = 14) -> bytes:
@@ -199,7 +205,7 @@ class CookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self.setup()
+        await self._setup()
         return await self._get(
             f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True
         )
