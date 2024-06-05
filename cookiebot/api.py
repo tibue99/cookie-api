@@ -12,12 +12,12 @@ class CookieAPI:
         self.api_key = api_key
         self._header = {"key": self.api_key, "accept": "application/json"}
 
-    async def _check_session(self):
+    async def setup(self):
         if self._session is None:
-            await self._setup()
+            self._session = aiohttp.ClientSession()
 
-    async def _setup(self):
-        self._session = aiohttp.ClientSession()
+    async def close(self):
+        await self._session.close()
 
     @staticmethod
     async def _check_error(status_code: int, errors: dict):
@@ -36,7 +36,7 @@ class CookieAPI:
         days:
             The number of days.
         """
-        await self._check_session()
+        await self.setup()
         async with self._session.get(
             BASE_URL + f"/members/{guild_id}?days={days}", headers=self._header
         ) as response:
@@ -52,7 +52,7 @@ class CookieAPI:
         user_id:
             The user's ID.
         """
-        await self._check_session()
+        await self.setup()
         async with self._session.get(
             BASE_URL + f"/stats/user/{user_id}", headers=self._header
         ) as response:
@@ -81,7 +81,7 @@ class CookieAPI:
         days:
             The number of days.
         """
-        await self._check_session()
+        await self.setup()
         async with self._session.get(
             BASE_URL + f"/stats/user/{user_id}/{guild_id}?days={days}", headers=self._header
         ) as response:
@@ -109,7 +109,7 @@ class CookieAPI:
         guild_id:
             The guild id from the guild.
         """
-        await self._check_session()
+        await self.setup()
         async with self._session.get(
             BASE_URL + f"/stats/user/{user_id}/{guild_id}", headers=self._header
         ) as response:
@@ -144,7 +144,7 @@ class CookieAPI:
             The number of days.
             Defaults to ``14``.
         """
-        await self._check_session()
+        await self.setup()
         async with self._session.get(
             BASE_URL + f"/stats/guild/{guild_id}?days={days}", headers=self._header
         ) as response:
