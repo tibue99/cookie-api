@@ -39,15 +39,15 @@ class MemberActivity:
     voice_min: int
     msg_rank: int
     voice_rank: int
-    current_voice_minutes: int
+    current_voice_min: int
 
 
 @dataclass
 class GuildActivity:
     days: int
-    messages: dict[str, int]
-    total_messages: int
-    total_voice_minutes: int
+    msg_activity: dict[str, int]
+    msg_count: int
+    voice_min: int
     top_channel: int
     top_channel_messages: int
     most_active_user_day: int | None
