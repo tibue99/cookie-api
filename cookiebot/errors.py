@@ -21,6 +21,6 @@ class GuildNotFound(NotFound):
         super().__init__("Could not find the guild ID.")
 
 
-class NotOwner(CookieError):
+class NoGuildAccess(CookieError):
     def __init__(self):
-        super().__init__("The API key owner is not a member of the guild.")
+        super().__init__("You are not a member of this guild.")
