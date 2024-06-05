@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
+DEFAULT_DAYS = 14
+
 
 class CookieAPI:
     """A class to interact with the Cookie Bot API.
@@ -72,7 +74,7 @@ class CookieAPI:
 
             return await response.json()
 
-    async def get_member_count(self, guild_id: int, days: int = 14) -> dict[date, int]:
+    async def get_member_count(self, guild_id: int, days: int = DEFAULT_DAYS) -> dict[date, int]:
         """Get the history of the guild member count for the provided number of days.
 
         Parameters
@@ -151,7 +153,7 @@ class CookieAPI:
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
         return MemberActivity(days, user_id, guild_id, **data)
 
-    async def get_guild_activity(self, guild_id: int, days: int = 14) -> GuildActivity:
+    async def get_guild_activity(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildActivity:
         """Get the guild's activity for the provided number of days.
 
         Parameters
@@ -170,7 +172,7 @@ class CookieAPI:
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
         return GuildActivity(days, **data)
 
-    async def get_guild_image(self, guild_id: int, days: int = 14) -> bytes:
+    async def get_guild_image(self, guild_id: int, days: int = DEFAULT_DAYS) -> bytes:
         """Get the guild's activity image for the provided number of days.
 
         Parameters
@@ -188,7 +190,9 @@ class CookieAPI:
         await self._setup()
         return await self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
-    async def get_member_image(self, user_id: int, guild_id: int, days: int = 14) -> bytes:
+    async def get_member_image(
+        self, user_id: int, guild_id: int, days: int = DEFAULT_DAYS
+    ) -> bytes:
         """Get the member's activity image for the provided number of days.
 
         Parameters
