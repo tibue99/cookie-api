@@ -16,16 +16,18 @@ def _stats_dict(data: dict[str, int]) -> dict[date, int]:
 
 
 class CookieAPI:
-    """A class to interact with the Cookie Bot API.
+    """A class to interact with the CookieBot API.
 
     Parameters
     ----------
     api_key:
         The API key to use. If no key is provided, ``COOKIE_KEY`` is loaded from the environment.
+    session:
+        An existing aiohttp session to use.
     """
 
-    def __init__(self, api_key: str | None = None):
-        self._session: aiohttp.ClientSession | None = None
+    def __init__(self, api_key: str | None = None, session: aiohttp.ClientSession | None = None):
+        self._session: aiohttp.ClientSession | None = session
 
         if api_key is None:
             load_dotenv()
@@ -48,6 +50,10 @@ class CookieAPI:
             self._session = aiohttp.ClientSession()
 
     async def close(self):
+        """Close the aiohttp session. When using the async context manager,
+        this is called automatically.
+        """
+
         await self._session.close()
 
     @overload

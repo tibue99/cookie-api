@@ -31,8 +31,12 @@ extensions = [
     "myst_parser",
 ]
 
+simplify_optional_unions = True
+autodoc_member_order = "bysource"
+
 intersphinx_mapping = {
     "py": ("https://docs.python.org/3", None),
+    "aio": ("https://docs.aiohttp.org/", None),
 }
 
 templates_path = ["_templates"]
