@@ -9,3 +9,4 @@
 
    cookiebot/api
    cookiebot/models
+   cookiebot/errors
