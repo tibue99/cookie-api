@@ -27,6 +27,7 @@ dependencies = {file = "requirements.txt"}
 [project.urls]
 GitHub = "https://github.com/tibue99/cookie-api"
 CookieBot = "https://cookie-bot.xyz"
+Documentation = "https://cookiebot.readthedocs.io"
 
 [build-system]
 requires = ["setuptools>=61.0"]
