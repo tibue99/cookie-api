@@ -1,13 +1,17 @@
 # CookieBot API
 Official wrapper for the [CookieBot](https://cookie-bot.xyz) API.
 
-## Installation
+## ⚙️ Installation
 Python 3.9 or higher is required
 ```
 pip install cookiebot
 ```
 
-## Example Usage
+## 🔑 How to get an API key?
+1. Invite [CookieBot](https://cookie-bot.xyz) to your Discord server
+2. Run `/premium api`
+
+## 🚀 Example Usage
 ```python
 import asyncio
 from cookiebot import CookieAPI
