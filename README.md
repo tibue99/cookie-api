@@ -1,4 +1,9 @@
 # CookieBot API
+[![](https://img.shields.io/pypi/v/cookiebot.svg?style=for-the-badge&logo=pypi&color=yellow&logoColor=white)](https://pypi.org/project/cookiebot/)
+[![](https://img.shields.io/pypi/l/cookiebot?style=for-the-badge&color=5865F2)](https://github.com/tibue99/cookie-api/blob/main/LICENSE)
+[![](https://img.shields.io/readthedocs/cookiebot?style=for-the-badge)](https://cookiebot.readthedocs.io/)
+[![](https://img.shields.io/badge/CookieBot-Website-orange?style=for-the-badge)](https://cookie-bot.xyz/)
+
 Official wrapper for the [CookieBot](https://cookie-bot.xyz) API.
 
 ## ⚙️ Installation
