@@ -257,15 +257,15 @@ class CookieAPI:
         self._header = {"key": api_key, "accept": "application/json"}
 
     @overload
-    def _get(self, endpoint: str) -> dict:
-        ...
+    def _get(self, endpoint: str) -> dict: ...
 
     @overload
-    def _get(self, endpoint: str, stream: bool) -> bytes:
-        ...
+    def _get(self, endpoint: str, stream: bool) -> bytes: ...
 
     def _get(self, endpoint: str, stream: bool = False):
-        response = self._httpx_client.get(f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header)
+        response = self._httpx_client.get(
+            f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header
+        )
 
         if response.status_code == 401:
             raise InvalidAPIKey()
@@ -338,9 +338,7 @@ class CookieAPI:
         data = self._get(f"stats/member/{user_id}/{guild_id}")
         return MemberStats(user_id, guild_id, **data)
 
-    def get_member_activity(
-            self, user_id: int, guild_id: int, days: int = 14
-    ) -> MemberActivity:
+    def get_member_activity(self, user_id: int, guild_id: int, days: int = 14) -> MemberActivity:
         """Get the member's activity for the provided number of days.
 
         Parameters
@@ -399,9 +397,7 @@ class CookieAPI:
         """
         return self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
-    def get_member_image(
-            self, user_id: int, guild_id: int, days: int = DEFAULT_DAYS
-    ) -> bytes:
+    def get_member_image(self, user_id: int, guild_id: int, days: int = DEFAULT_DAYS) -> bytes:
         """Get the member's activity image for the provided number of days.
 
         Parameters
@@ -418,6 +414,4 @@ class CookieAPI:
         UserNotFound:
             The user was not found.
         """
-        return self._get(
-            f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True
-        )
+        return self._get(f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True)
