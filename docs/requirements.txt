@@ -3,5 +3,5 @@ furo
 sphinx-autodoc-typehints
 sphinx-copybutton
 myst-parser
-aiohttp
+httpx
 python-dotenv
