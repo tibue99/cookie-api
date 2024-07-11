@@ -2,7 +2,6 @@ import os
 from datetime import date, datetime
 from typing import overload
 
-import aiohttp
 import httpx
 from dotenv import load_dotenv
 
@@ -27,8 +26,8 @@ class AsyncCookieAPI:
         An existing aiohttp session to use.
     """
 
-    def __init__(self, api_key: str | None = None, session: aiohttp.ClientSession | None = None):
-        self._session: aiohttp.ClientSession | None = session
+    def __init__(self, api_key: str | None = None, session: httpx.AsyncClient | None = None):
+        self._session: httpx.AsyncClient | None = session
 
         if api_key is None:
             load_dotenv()
@@ -41,6 +40,7 @@ class AsyncCookieAPI:
         self._header = {"key": api_key, "accept": "application/json"}
 
     async def __aenter__(self):
+        await self._setup()
         return self
 
     async def __aexit__(self, *args):
@@ -48,14 +48,14 @@ class AsyncCookieAPI:
 
     async def _setup(self):
         if self._session is None:
-            self._session = aiohttp.ClientSession()
+            self._session = httpx.AsyncClient()
 
     async def close(self):
         """Close the aiohttp session. When using the async context manager,
         this is called automatically.
         """
 
-        await self._session.close()
+        await self._session.aclose()
 
     @overload
     async def _get(self, endpoint: str) -> dict: ...
@@ -64,26 +64,27 @@ class AsyncCookieAPI:
     async def _get(self, endpoint: str, stream: bool) -> bytes: ...
 
     async def _get(self, endpoint: str, stream: bool = False):
-        async with self._session.get(
+        await self._setup()
+        response = await self._session.get(
             f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header
-        ) as response:
-            if response.status == 401:
-                raise InvalidAPIKey()
-            elif response.status == 403:
-                raise NoGuildAccess()
-            elif response.status == 404:
-                response = await response.json()
-                message = response.get("detail")
-                if "user" in message.lower() or "member" in message.lower():
-                    raise UserNotFound()
-                elif "guild" in message.lower():
-                    raise GuildNotFound()
-                raise NotFound()
+        )
+        if response.status_code == 401:
+            raise InvalidAPIKey()
+        elif response.status_code == 403:
+            raise NoGuildAccess()
+        elif response.status_code == 404:
+            response = await response.json()
+            message = response.get("detail")
+            if "user" in message.lower() or "member" in message.lower():
+                raise UserNotFound()
+            elif "guild" in message.lower():
+                raise GuildNotFound()
+            raise NotFound()
 
-            if stream:
-                return await response.read()
+        if stream:
+            return await response.aread()
 
-            return await response.json()
+        return response.json()
 
     async def get_member_count(self, guild_id: int, days: int = DEFAULT_DAYS) -> dict[date, int]:
         """Get the history of the guild member count for the provided number of days.
@@ -100,7 +101,6 @@ class AsyncCookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self._setup()
         message_data = await self._get(f"member_count/{guild_id}?days={days}")
 
         return _stats_dict(message_data)
@@ -118,7 +118,6 @@ class AsyncCookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self._setup()
         data = await self._get(f"stats/user/{user_id}")
         return UserStats(user_id, **data)
 
@@ -137,7 +136,6 @@ class AsyncCookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self._setup()
         data = await self._get(f"stats/member/{user_id}/{guild_id}")
         return MemberStats(user_id, guild_id, **data)
 
@@ -160,7 +158,6 @@ class AsyncCookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self._setup()
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
         msg_activity = _stats_dict(data.pop("msg_activity"))
         voice_activity = _stats_dict(data.pop("voice_activity"))
@@ -181,7 +178,6 @@ class AsyncCookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self._setup()
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
         msg_activity = _stats_dict(data.pop("msg_activity"))
         voice_activity = _stats_dict(data.pop("voice_activity"))
@@ -202,7 +198,6 @@ class AsyncCookieAPI:
         GuildNotFound:
             The guild was not found.
         """
-        await self._setup()
         return await self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
     async def get_member_image(
@@ -224,7 +219,6 @@ class AsyncCookieAPI:
         UserNotFound:
             The user was not found.
         """
-        await self._setup()
         return await self._get(
             f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True
         )
