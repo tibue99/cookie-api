@@ -12,13 +12,16 @@ pip install cookiebot
 2. Run `/premium api`
 
 ## 🚀 Example Usage
+The API key can be passed as a parameter or set as the environment variable `COOKIE_KEY`.
+For more information, see to our [documentation](https://cookie-bot.xyz/docs/api).
+
 ### Sync Example
 ```python
 from cookiebot import CookieAPI
 
 api = CookieAPI(api_key="[YOUR_API_KEY]")
 
-user_stats = api.get_user_stats(123456789)
+user_stats = api.get_user_stats(123456789)  # Replace with user ID
 ```
 ### Async Example
 ```python

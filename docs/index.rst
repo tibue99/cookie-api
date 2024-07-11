@@ -10,3 +10,4 @@
    cookiebot/api
    cookiebot/models
    cookiebot/errors
+   cookiebot/examples
