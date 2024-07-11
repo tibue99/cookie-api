@@ -8,15 +8,24 @@ pip install cookiebot
 ```
 
 ## 🔑 How to get an API key?
-1. Invite [CookieBot](https://cookie-bot.xyz) to your Discord server
+1. Invite [CookieBot](https://cookie-bot.xyz) to your Discord server or to your Discord account
 2. Run `/premium api`
 
 ## 🚀 Example Usage
+### Sync Example
 ```python
-import asyncio
 from cookiebot import CookieAPI
 
 api = CookieAPI(api_key="[YOUR_API_KEY]")
+
+user_stats = api.get_user_stats(123456789)
+```
+### Async Example
+```python
+import asyncio
+from cookiebot import AsyncCookieAPI
+
+api = AsyncCookieAPI(api_key="[YOUR_API_KEY]")
 
 async def main():
     user_stats = await api.get_user_stats(123456789)  # Replace with user ID
