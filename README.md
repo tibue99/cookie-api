@@ -18,7 +18,7 @@ pip install cookiebot
 
 ## 🚀 Example Usage
 The API key can be passed as a parameter or set as the environment variable `COOKIE_KEY`.
-For more information, see to our [documentation](https://cookie-bot.xyz/docs/api).
+For more information, see to our [documentation](https://cookiebot.readthedocs.io/).
 
 ### Sync Example
 ```python
@@ -47,3 +47,6 @@ async def main():
     async with api as con:
         user_stats = await con.get_user_stats(123456789)  # Replace with user ID
 ```
+
+## ⚡ FastAPI Docs
+If you want to use the API without this wrapper, you can find the FastAPI docs [here](https://api.cookie-bot.xyz/docs).
