@@ -7,7 +7,7 @@
    :hidden:
    :caption: Contents:
 
-   cookiebot/api
-   cookiebot/models
-   cookiebot/errors
-   cookiebot/examples
+   cookie/api
+   cookie/models
+   cookie/errors
+   cookie/examples

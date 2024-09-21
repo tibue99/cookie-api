@@ -1,6 +1,6 @@
 Models
 =======================
 
-.. automodule:: cookiebot.models
+.. automodule:: cookie.models
    :members:
    :undoc-members:

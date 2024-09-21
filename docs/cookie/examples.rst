@@ -1,6 +1,6 @@
 Examples
 =======================
-These examples demonstrate how to use the CookieBot API.
+These examples demonstrate how to use the Cookie API.
 The API key should be defined in a ``.env`` file in the root of the project.
 
 .. literalinclude:: ../../examples/example.env

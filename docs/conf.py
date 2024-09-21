@@ -12,9 +12,9 @@ from datetime import date
 
 sys.path.insert(0, os.path.abspath("../"))
 
-from cookiebot import __version__
+from cookie import __version__
 
-project = "CookieBot"
+project = "Cookie API"
 copyright = f"{date.today().year}, tibue99"
 author = "tibue99"
 release = __version__

@@ -1,28 +1,28 @@
-# CookieBot API
-[![](https://img.shields.io/pypi/v/cookiebot.svg?style=for-the-badge&logo=pypi&color=yellow&logoColor=white)](https://pypi.org/project/cookiebot/)
-[![](https://img.shields.io/pypi/l/cookiebot?style=for-the-badge&color=5865F2)](https://github.com/tibue99/cookie-api/blob/main/LICENSE)
-[![](https://img.shields.io/readthedocs/cookiebot?style=for-the-badge)](https://cookiebot.readthedocs.io/)
-[![](https://img.shields.io/badge/CookieBot-Website-orange?style=for-the-badge)](https://cookie-bot.xyz/)
+# Cookie API
+[![](https://img.shields.io/pypi/v/cookie-api.svg?style=for-the-badge&logo=pypi&color=yellow&logoColor=white)](https://pypi.org/project/cookie-api/)
+[![](https://img.shields.io/pypi/l/cookie-api?style=for-the-badge&color=5865F2)](https://github.com/tibue99/cookie-api/blob/main/LICENSE)
+[![](https://img.shields.io/readthedocs/cookie-api?style=for-the-badge)](https://cookie-api.readthedocs.io/)
+[![](https://img.shields.io/badge/Cookie-Website-orange?style=for-the-badge)](https://cookieapp.me/)
 
-Official wrapper for the [CookieBot](https://cookie-bot.xyz) API.
+Official wrapper for the [Cookie](https://cookieapp.me) API.
 
 ## ⚙️ Installation
 Python 3.9 or higher is required
 ```
-pip install cookiebot
+pip install cookie-api
 ```
 
 ## 🔑 How to get an API key?
-1. Invite [CookieBot](https://cookie-bot.xyz) to your Discord server or to your Discord account
+1. Invite [Cookie](https://cookieapp.me) to your Discord server or to your Discord account
 2. Run `/premium api`
 
 ## 🚀 Example Usage
 The API key can be passed as a parameter or set as the environment variable `COOKIE_KEY`.
-For more information, see to our [documentation](https://cookiebot.readthedocs.io/).
+For more information, see to our [documentation](https://cookie-api.readthedocs.io/).
 
 ### Sync Example
 ```python
-from cookiebot import CookieAPI
+from cookie import CookieAPI
 
 api = CookieAPI(api_key="[YOUR_API_KEY]")
 
@@ -31,7 +31,7 @@ user_stats = api.get_user_stats(123456789)  # Replace with user ID
 ### Async Example
 ```python
 import asyncio
-from cookiebot import AsyncCookieAPI
+from cookie import AsyncCookieAPI
 
 api = AsyncCookieAPI(api_key="[YOUR_API_KEY]")
 

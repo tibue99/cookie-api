@@ -1,5 +1,5 @@
 class CookieError(Exception):
-    """Base exception class for all CookieBot exceptions."""
+    """Base exception class for all Cookie exceptions."""
 
     pass
 

@@ -11,8 +11,8 @@ body:
 
 - type: input
   attributes:
-    label: CookieBot Version
-    description: Which version of CookieBot are you using?
+    label: Cookie API Version
+    description: Which version of Cookie API are you using?
     placeholder: X.Y.Z
   validations:
     required: true
