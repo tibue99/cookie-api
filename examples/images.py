@@ -2,7 +2,7 @@ import io
 
 from PIL import Image
 
-from cookiebot import CookieAPI
+from cookie import CookieAPI
 
 api = CookieAPI()  # API key is set in .env
 

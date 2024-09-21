@@ -16,7 +16,7 @@ def _stats_dict(data: dict[str, int]) -> dict[date, int]:
 
 
 class AsyncCookieAPI:
-    """A class to interact with the CookieBot API.
+    """A class to interact with the Cookie API.
 
     Parameters
     ----------
@@ -225,7 +225,7 @@ class AsyncCookieAPI:
 
 
 class CookieAPI:
-    """A class to interact with the CookieBot API.
+    """A class to interact with the Cookie API.
 
     Parameters
     ----------

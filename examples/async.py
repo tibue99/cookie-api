@@ -1,6 +1,6 @@
 import asyncio
 
-from cookiebot import AsyncCookieAPI
+from cookie import AsyncCookieAPI
 
 api = AsyncCookieAPI()  # API key is set in .env
 

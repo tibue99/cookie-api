@@ -1,10 +1,10 @@
 [project]
-name = "cookiebot"
-description = "An API wrapper for the CookieBot API"
+name = "cookie-api"
+description = "An API wrapper for the Cookie API"
 requires-python = ">=3.9"
 license = {text = "MIT"}
 readme = "README.md"
-keywords = ["cookie-bot", "cookie", "api"]
+keywords = ["discord", "bot", "cookie", "api"]
 authors = [
     { name = "tibue99" }, { name="tobfd" }
 ]
@@ -21,13 +21,13 @@ classifiers = [
 dynamic = ["dependencies", "version"]
 
 [tool.setuptools.dynamic]
-version = {attr = "cookiebot.__version__"}
+version = {attr = "cookie.__version__"}
 dependencies = {file = "requirements.txt"}
 
 [project.urls]
 GitHub = "https://github.com/tibue99/cookie-api"
-CookieBot = "https://cookie-bot.xyz"
-Documentation = "https://cookiebot.readthedocs.io"
+Cookie = "https://cookieapp.me"
+Documentation = "https://cookie-api.readthedocs.io"
 
 [build-system]
 requires = ["setuptools>=61.0"]

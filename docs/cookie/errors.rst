@@ -1,6 +1,6 @@
-API
+Errors
 =======================
 
-.. autoclass:: cookiebot.CookieAPI
+.. automodule:: cookie.errors
    :members:
    :undoc-members:

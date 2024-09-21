@@ -1,4 +1,4 @@
-from cookiebot import CookieAPI
+from cookie import CookieAPI
 
 api = CookieAPI()  # API key is set in .env
 
