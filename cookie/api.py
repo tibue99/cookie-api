@@ -9,6 +9,7 @@ from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserN
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 DEFAULT_DAYS = 14
+BASE_URL = "https://api.cookieapp.me/v1/"
 
 
 def _stats_dict(data: dict[str, int]) -> dict[date, int]:
@@ -65,9 +66,7 @@ class AsyncCookieAPI:
 
     async def _get(self, endpoint: str, stream: bool = False):
         await self._setup()
-        response = await self._session.get(
-            f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header
-        )
+        response = await self._session.get(BASE_URL + endpoint, headers=self._header)
         if response.status_code == 401:
             raise InvalidAPIKey()
         elif response.status_code == 403:
@@ -257,9 +256,7 @@ class CookieAPI:
     def _get(self, endpoint: str, stream: bool) -> bytes: ...
 
     def _get(self, endpoint: str, stream: bool = False):
-        response = self._httpx_client.get(
-            f"https://api.cookie-bot.xyz/v1/{endpoint}", headers=self._header
-        )
+        response = self._httpx_client.get(BASE_URL + endpoint, headers=self._header)
 
         if response.status_code == 401:
             raise InvalidAPIKey()
