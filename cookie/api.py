@@ -27,7 +27,7 @@ def _handle_error(response):
         if status == "quota_exceeded":
             raise QuotaExceeded(message)
         else:
-            raise InvalidAPIKey()
+            raise InvalidAPIKey(message)
     elif response.status_code == 403:
         raise NoGuildAccess()
     elif response.status_code == 404:
