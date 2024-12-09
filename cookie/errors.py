@@ -10,7 +10,14 @@ class InvalidAPIKey(CookieError):
     """
 
     def __init__(self, msg: str | None = None):
-        super().__init__(msg or "Invalid API key.")
+        super().__init__(msg or "Please provide a valid API key.")
+
+
+class QuotaExceeded(CookieError):
+    """Raised when the monthly usage limit is exceeded."""
+
+    def __init__(self, msg: str | None = None):
+        super().__init__(msg or "You have exceeded the monthly usage limit.")
 
 
 class NotFound(CookieError):
