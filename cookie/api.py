@@ -5,7 +5,7 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import GuildNotFound, InvalidAPIKey, NoGuildAccess, NotFound, UserNotFound
+from .errors import InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 DEFAULT_DAYS = 14
@@ -14,6 +14,24 @@ BASE_URL = "https://api.cookieapp.me/v1/"
 
 def _stats_dict(data: dict[str, int]) -> dict[date, int]:
     return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in data.items()}
+
+
+def _handle_error(response):
+    data = response.json()
+    status, message = None, None
+    if "detail" in data:
+        status = data["detail"].get("status")
+        message = data["detail"].get("message")
+
+    if response.status_code == 401:
+        if status == "quota_exceeded":
+            raise QuotaExceeded(message)
+        else:
+            raise InvalidAPIKey(message)
+    elif response.status_code == 403:
+        raise NoGuildAccess()
+    elif response.status_code == 404:
+        raise NotFound(message)
 
 
 class AsyncCookieAPI:
@@ -67,18 +85,8 @@ class AsyncCookieAPI:
     async def _get(self, endpoint: str, stream: bool = False):
         await self._setup()
         response = await self._session.get(BASE_URL + endpoint, headers=self._header)
-        if response.status_code == 401:
-            raise InvalidAPIKey()
-        elif response.status_code == 403:
-            raise NoGuildAccess()
-        elif response.status_code == 404:
-            response = await response.json()
-            message = response.get("detail")
-            if "user" in message.lower() or "member" in message.lower():
-                raise UserNotFound()
-            elif "guild" in message.lower():
-                raise GuildNotFound()
-            raise NotFound()
+        if response.status_code != 200:
+            _handle_error(response)
 
         if stream:
             return await response.aread()
@@ -257,19 +265,8 @@ class CookieAPI:
 
     def _get(self, endpoint: str, stream: bool = False):
         response = self._httpx_client.get(BASE_URL + endpoint, headers=self._header)
-
-        if response.status_code == 401:
-            raise InvalidAPIKey()
-        elif response.status_code == 403:
-            raise NoGuildAccess()
-        elif response.status_code == 404:
-            response = response.json()
-            message = response.get("detail")
-            if "user" in message.lower() or "member" in message.lower():
-                raise UserNotFound()
-            elif "guild" in message.lower():
-                raise GuildNotFound()
-            raise NotFound()
+        if response.status_code != 200:
+            _handle_error(response)
 
         if stream:
             return response.read()

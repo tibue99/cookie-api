@@ -10,27 +10,20 @@ class InvalidAPIKey(CookieError):
     """
 
     def __init__(self, msg: str | None = None):
-        super().__init__(msg or "Invalid API key.")
+        super().__init__(msg or "Please provide a valid API key.")
+
+
+class QuotaExceeded(CookieError):
+    """Raised when the monthly usage limit is exceeded."""
+
+    def __init__(self, msg: str | None = None):
+        super().__init__(msg or "You have exceeded the monthly usage limit.")
 
 
 class NotFound(CookieError):
     """Raised when an object is not found."""
 
     pass
-
-
-class UserNotFound(NotFound):
-    """Raised when the given user ID is not found."""
-
-    def __init__(self):
-        super().__init__("Could not find the user ID.")
-
-
-class GuildNotFound(NotFound):
-    """Raised when the given guild ID is not found."""
-
-    def __init__(self):
-        super().__init__("Could not find the guild ID.")
 
 
 class NoGuildAccess(CookieError):
