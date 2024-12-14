@@ -2,7 +2,6 @@ __pycache__/
 .idea/
 venv/
 .env
-tests
 
 # Packaging
 build/
