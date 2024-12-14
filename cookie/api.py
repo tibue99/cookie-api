@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import date, datetime
 from typing import overload
@@ -5,7 +6,7 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
+from .errors import CookieError, InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 DEFAULT_DAYS = 14
@@ -16,8 +17,11 @@ def _stats_dict(data: dict[str, int]) -> dict[date, int]:
     return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in data.items()}
 
 
-def _handle_error(response):
-    data = response.json()
+def _handle_error(response: httpx.Response):
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        raise CookieError(response)
     status, message = None, None
     if "detail" in data:
         status = data["detail"].get("status")
@@ -32,6 +36,8 @@ def _handle_error(response):
         raise NoGuildAccess()
     elif response.status_code == 404:
         raise NotFound(message)
+    else:
+        raise CookieError(response)
 
 
 class AsyncCookieAPI:
@@ -105,8 +111,8 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         message_data = await self._get(f"member_count/{guild_id}?days={days}")
 
@@ -122,7 +128,7 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = await self._get(f"stats/user/{user_id}")
@@ -140,7 +146,7 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = await self._get(f"stats/member/{user_id}/{guild_id}")
@@ -162,7 +168,7 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
@@ -182,8 +188,8 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
         msg_activity = _stats_dict(data.pop("msg_activity"))
@@ -202,8 +208,8 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         return await self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
@@ -223,7 +229,7 @@ class AsyncCookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         return await self._get(
@@ -285,8 +291,8 @@ class CookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         message_data = self._get(f"member_count/{guild_id}?days={days}")
 
@@ -302,7 +308,7 @@ class CookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = self._get(f"stats/user/{user_id}")
@@ -320,7 +326,7 @@ class CookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = self._get(f"stats/member/{user_id}/{guild_id}")
@@ -340,7 +346,7 @@ class CookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         data = self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
@@ -360,8 +366,8 @@ class CookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         data = self._get(f"activity/guild/{guild_id}?days={days}")
         msg_activity = _stats_dict(data.pop("msg_activity"))
@@ -380,8 +386,8 @@ class CookieAPI:
 
         Raises
         ------
-        GuildNotFound:
-            The guild was not found.
+        NoGuildAccess:
+            You don't have access to that guild.
         """
         return self._get(f"activity/guild/{guild_id}/image?days={days}", stream=True)
 
@@ -399,7 +405,7 @@ class CookieAPI:
 
         Raises
         ------
-        UserNotFound:
+        NotFound:
             The user was not found.
         """
         return self._get(f"activity/member/{user_id}/{guild_id}/image?days={days}", stream=True)

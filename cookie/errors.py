@@ -1,7 +1,16 @@
+from httpx import Response
+
+
 class CookieError(Exception):
     """Base exception class for all Cookie exceptions."""
 
-    pass
+    def __init__(self, response: Response | str):
+        if isinstance(response, Response):
+            msg = f"Status Code {response.status_code} for URL {response.url}: {response.text}"
+        else:
+            msg = response
+
+        super().__init__(msg)
 
 
 class InvalidAPIKey(CookieError):
