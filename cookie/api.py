@@ -1,3 +1,4 @@
+import json
 import os
 from datetime import date, datetime
 from typing import overload
@@ -5,7 +6,7 @@ from typing import overload
 import httpx
 from dotenv import load_dotenv
 
-from .errors import InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
+from .errors import CookieError, InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
 from .models import GuildActivity, MemberActivity, MemberStats, UserStats
 
 DEFAULT_DAYS = 14
@@ -16,8 +17,11 @@ def _stats_dict(data: dict[str, int]) -> dict[date, int]:
     return {datetime.strptime(d, "%Y-%m-%d").date(): count for d, count in data.items()}
 
 
-def _handle_error(response):
-    data = response.json()
+def _handle_error(response: httpx.Response):
+    try:
+        data = response.json()
+    except json.JSONDecodeError:
+        raise CookieError(response)
     status, message = None, None
     if "detail" in data:
         status = data["detail"].get("status")
@@ -32,6 +36,8 @@ def _handle_error(response):
         raise NoGuildAccess()
     elif response.status_code == 404:
         raise NotFound(message)
+    else:
+        raise CookieError(response)
 
 
 class AsyncCookieAPI:
