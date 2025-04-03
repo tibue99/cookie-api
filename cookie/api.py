@@ -9,7 +9,7 @@ import httpx
 from dotenv import load_dotenv
 
 from .errors import CookieError, InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
-from .models import GuildActivity, MemberActivity, MemberStats, UserStats, GuildStats
+from .models import GuildActivity, GuildStats, MemberActivity, MemberStats, UserStats
 
 DEFAULT_DAYS = 14
 BASE_URL = "https://api.cookieapp.me/v1/"
@@ -133,7 +133,7 @@ class AsyncCookieAPI:
             The user was not found.
         """
         data = await self._get(f"stats/user/{user_id}")
-        return UserStats(user_id, **data)
+        return UserStats(**data)
 
     async def get_member_stats(self, user_id: int, guild_id: int) -> MemberStats:
         """Get the member's level stats.
@@ -151,7 +151,7 @@ class AsyncCookieAPI:
             The user was not found.
         """
         data = await self._get(f"stats/member/{user_id}/{guild_id}")
-        return MemberStats(user_id, guild_id, **data)
+        return MemberStats(**data)
 
     async def get_member_activity(
         self, user_id: int, guild_id: int, days: int = 14
@@ -173,9 +173,9 @@ class AsyncCookieAPI:
             The user was not found.
         """
         data = await self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
-        msg_activity = _stats_dict(data.pop("msg_activity"))
-        voice_activity = _stats_dict(data.pop("voice_activity"))
-        return MemberActivity(days, user_id, guild_id, msg_activity, voice_activity, **data)
+        # msg_activity = _stats_dict(data.pop("msg_activity"))
+        # voice_activity = _stats_dict(data.pop("voice_activity"))
+        return MemberActivity(**data)
 
     async def get_guild_activity(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildActivity:
         """Get the guild's activity for the provided number of days.
@@ -193,9 +193,9 @@ class AsyncCookieAPI:
             You don't have access to that guild.
         """
         data = await self._get(f"activity/guild/{guild_id}?days={days}")
-        msg_activity = _stats_dict(data.pop("msg_activity"))
-        voice_activity = _stats_dict(data.pop("voice_activity"))
-        return GuildActivity(days, guild_id, msg_activity, voice_activity, **data)
+        # msg_activity = _stats_dict(data.pop("msg_activity"))
+        # voice_activity = _stats_dict(data.pop("voice_activity"))
+        return GuildActivity(**data)
 
     async def get_guild_image(self, guild_id: int, days: int = DEFAULT_DAYS) -> bytes:
         """Get the guild's activity image for the provided number of days.
@@ -312,7 +312,7 @@ class CookieAPI:
             The user was not found.
         """
         data = self._get(f"stats/user/{user_id}")
-        return UserStats(user_id, **data)
+        return UserStats(**data)
 
     def get_member_stats(self, user_id: int, guild_id: int) -> MemberStats:
         """Get the member's level stats.
@@ -330,7 +330,7 @@ class CookieAPI:
             The user was not found.
         """
         data = self._get(f"stats/member/{user_id}/{guild_id}")
-        return MemberStats(user_id, guild_id, **data)
+        return MemberStats(**data)
 
     def get_member_activity(self, user_id: int, guild_id: int, days: int = 14) -> MemberActivity:
         """Get the member's activity for the provided number of days.
@@ -350,9 +350,9 @@ class CookieAPI:
             The user was not found.
         """
         data = self._get(f"activity/member/{user_id}/{guild_id}?days={days}")
-        msg_activity = _stats_dict(data.pop("msg_activity"))
-        voice_activity = _stats_dict(data.pop("voice_activity"))
-        return MemberActivity(days, user_id, guild_id, msg_activity, voice_activity, **data)
+        # msg_activity = _stats_dict(data.pop("msg_activity"))
+        # voice_activity = _stats_dict(data.pop("voice_activity"))
+        return MemberActivity(**data)
 
     def get_guild_activity(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildActivity:
         """Get the guild's activity for the provided number of days.
@@ -370,9 +370,9 @@ class CookieAPI:
             You don't have access to that guild.
         """
         data = self._get(f"activity/guild/{guild_id}?days={days}")
-        msg_activity = _stats_dict(data.pop("msg_activity"))
-        voice_activity = _stats_dict(data.pop("voice_activity"))
-        return GuildActivity(days, guild_id, msg_activity, voice_activity, **data)
+        # msg_activity = _stats_dict(data.pop("msg_activity"))
+        # voice_activity = _stats_dict(data.pop("voice_activity"))
+        return GuildActivity(**data)
 
     def get_guild_image(self, guild_id: int, days: int = DEFAULT_DAYS) -> bytes:
         """Get the guild's activity image for the provided number of days.
