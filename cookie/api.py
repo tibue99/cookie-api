@@ -9,7 +9,7 @@ import httpx
 from dotenv import load_dotenv
 
 from .errors import CookieError, InvalidAPIKey, NoGuildAccess, NotFound, QuotaExceeded
-from .models import GuildActivity, MemberActivity, MemberStats, UserStats
+from .models import GuildActivity, MemberActivity, MemberStats, UserStats, GuildStats
 
 DEFAULT_DAYS = 14
 BASE_URL = "https://api.cookieapp.me/v1/"
@@ -101,7 +101,7 @@ class AsyncCookieAPI:
 
         return response.json()
 
-    async def get_member_count(self, guild_id: int, days: int = DEFAULT_DAYS) -> dict[date, int]:
+    async def get_guild_stats(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildStats:
         """Get the history of the guild member count for the provided number of days.
 
         Parameters
@@ -116,9 +116,8 @@ class AsyncCookieAPI:
         NoGuildAccess:
             You don't have access to that guild.
         """
-        message_data = await self._get(f"member_count/{guild_id}?days={days}")
-
-        return _stats_dict(message_data)
+        data = await self._get(f"stats/guild/{guild_id}?days={days}")
+        return GuildStats(**data)
 
     async def get_user_stats(self, user_id: int) -> UserStats:
         """Get the user's level stats.
@@ -281,7 +280,7 @@ class CookieAPI:
 
         return response.json()
 
-    def get_member_count(self, guild_id: int, days: int = DEFAULT_DAYS) -> dict[date, int]:
+    def get_guild_stats(self, guild_id: int, days: int = DEFAULT_DAYS) -> GuildStats:
         """Get the history of the guild member count for the provided number of days.
 
         Parameters
@@ -296,9 +295,8 @@ class CookieAPI:
         NoGuildAccess:
             You don't have access to that guild.
         """
-        message_data = self._get(f"member_count/{guild_id}?days={days}")
-
-        return _stats_dict(message_data)
+        data = self._get(f"stats/guild/{guild_id}?days={days}")
+        return GuildStats(**data)
 
     def get_user_stats(self, user_id: int) -> UserStats:
         """Get the user's level stats.
