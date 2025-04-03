@@ -50,3 +50,11 @@ async def main():
 
 ## ⚡ FastAPI Docs
 If you want to use the API without this wrapper, you can find the FastAPI docs [here](https://api.cookie-bot.xyz/docs).
+
+
+## 🗿 Models
+The models are automatically generated using the OpenAPI spec:
+```
+datamodel-codegen --url http://localhost:8000/openapi.json --output cookie/models.py --input-file-type openapi
+# TODO
+```

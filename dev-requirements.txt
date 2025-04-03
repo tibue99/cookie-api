@@ -4,6 +4,4 @@ pre-commit
 pytest
 pytest-asyncio
 pillow
-openapi-generator-cli[jdk4py]
-openapi-python-client
-datamodel-code-generator
+datamodel-code-generator[http]
