@@ -154,7 +154,7 @@ class AsyncCookieAPI:
         return MemberStats(**data)
 
     async def get_member_activity(
-        self, user_id: int, guild_id: int, days: int = 14
+        self, user_id: int, guild_id: int, days: int = DEFAULT_DAYS
     ) -> MemberActivity:
         """Get the member's activity for the provided number of days.
 
@@ -332,7 +332,9 @@ class CookieAPI:
         data = self._get(f"stats/member/{user_id}/{guild_id}")
         return MemberStats(**data)
 
-    def get_member_activity(self, user_id: int, guild_id: int, days: int = 14) -> MemberActivity:
+    def get_member_activity(
+        self, user_id: int, guild_id: int, days: int = DEFAULT_DAYS
+    ) -> MemberActivity:
         """Get the member's activity for the provided number of days.
 
         Parameters
