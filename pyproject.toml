@@ -23,7 +23,7 @@ dynamic = ["dependencies", "version"]
 
 [tool.setuptools.dynamic]
 version = {attr = "cookie.__version__"}
-dependencies = {file = "requirements.txt"}
+dependencies = {file = "requirements/requirements.txt"}
 
 [project.urls]
 GitHub = "https://github.com/tibue99/cookie-api"

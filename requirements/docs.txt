@@ -1,7 +1,6 @@
+-r requirements.txt
 sphinx
 furo
 sphinx-autodoc-typehints
 sphinx-copybutton
 myst-parser
-httpx
-python-dotenv
