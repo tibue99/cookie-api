@@ -18,8 +18,8 @@ INVALID_GUILD_ID = 54321
 
 def test_sync_api():
     api = cookie.CookieAPI()
-    member_count = api.get_guild_stats(GUILD_ID)
-    assert isinstance(member_count, cookie.GuildStats)
+    guild_stats = api.get_guild_stats(GUILD_ID)
+    assert isinstance(guild_stats, cookie.GuildStats)
 
     user_stats = api.get_user_stats(USER_ID)
     assert isinstance(user_stats, cookie.UserStats)
@@ -50,8 +50,8 @@ async def test_async_api():
     async_api = cookie.AsyncCookieAPI()
 
     async with async_api as api:
-        member_count = await api.get_guild_stats(GUILD_ID)
-        assert isinstance(member_count, cookie.GuildStats)
+        guild_stats = await api.get_guild_stats(GUILD_ID)
+        assert isinstance(guild_stats, cookie.GuildStats)
 
         user_stats = await api.get_user_stats(USER_ID)
         assert isinstance(user_stats, cookie.UserStats)
