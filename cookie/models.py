@@ -7,8 +7,10 @@ from datetime import date, datetime
 
 from pydantic import BaseModel, Field
 
+from ._internal import BaseChart
 
-class Chart(BaseModel):
+
+class Chart(BaseChart):
     x: list[date] = Field(..., title="X")
     y: list[int] = Field(..., title="Y")
 
