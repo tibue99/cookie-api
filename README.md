@@ -48,8 +48,8 @@ async def main():
         user_stats = await con.get_user_stats(123456789)  # Replace with user ID
 ```
 
-## ⚡ FastAPI Docs
-If you want to use the API without this wrapper, you can find the FastAPI docs [here](https://api.cookie-bot.xyz/docs).
+## ⚡ OpenAPI Docs
+If you want to use the API without this wrapper, you can find the OpenAPI docs [here](https://api.cookieapp.me/docs).
 
 
 ## 🗿 Models
