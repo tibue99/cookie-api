@@ -18,8 +18,8 @@ INVALID_GUILD_ID = 54321
 
 def test_sync_api():
     api = cookie.CookieAPI()
-    member_count = api.get_member_count(GUILD_ID)
-    assert isinstance(member_count, dict)
+    guild_stats = api.get_guild_stats(GUILD_ID)
+    assert isinstance(guild_stats, cookie.GuildStats)
 
     user_stats = api.get_user_stats(USER_ID)
     assert isinstance(user_stats, cookie.UserStats)
@@ -50,8 +50,8 @@ async def test_async_api():
     async_api = cookie.AsyncCookieAPI()
 
     async with async_api as api:
-        member_count = await api.get_member_count(GUILD_ID)
-        assert isinstance(member_count, dict)
+        guild_stats = await api.get_guild_stats(GUILD_ID)
+        assert isinstance(guild_stats, cookie.GuildStats)
 
         user_stats = await api.get_user_stats(USER_ID)
         assert isinstance(user_stats, cookie.UserStats)
@@ -83,9 +83,9 @@ async def test_invalid_keys():
 
     with pytest.raises(cookie.InvalidAPIKey):
         api = cookie.CookieAPI(api_key=invalid_key)
-        api.get_member_count(GUILD_ID)
+        api.get_guild_stats(GUILD_ID)
 
     with pytest.raises(cookie.InvalidAPIKey):
         async_api = cookie.AsyncCookieAPI(api_key=invalid_key)
         async with async_api as api:
-            await api.get_member_count(GUILD_ID)
+            await api.get_guild_stats(GUILD_ID)

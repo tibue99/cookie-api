@@ -1,0 +1,7 @@
+-r requirements.txt
+-r docs.txt
+pre-commit
+pytest
+pytest-asyncio
+pillow
+datamodel-code-generator[http]
