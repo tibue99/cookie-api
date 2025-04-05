@@ -51,9 +51,7 @@ async def main():
 ## ⚡ OpenAPI Docs
 If you want to use the API without this wrapper, you can find the OpenAPI docs [here](https://api.cookieapp.me/docs).
 
-
-## 🗿 Models
-The models are automatically generated using the OpenAPI spec:
+The models in this package are automatically generated using the OpenAPI spec:
 ```
 python cookie/_internal/model_generator.py
 ```
