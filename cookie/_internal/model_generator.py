@@ -11,7 +11,7 @@ from datamodel_code_generator import (
 )
 
 generate(
-    urlparse("http://localhost:8000/openapi.json"),
+    urlparse("https://api.cookieapp.me/openapi.json"),
     input_file_type=InputFileType.OpenAPI,
     use_union_operator=True,
     use_double_quotes=True,
