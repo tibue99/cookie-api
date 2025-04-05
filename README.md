@@ -55,5 +55,5 @@ If you want to use the API without this wrapper, you can find the FastAPI docs [
 ## 🗿 Models
 The models are automatically generated using the OpenAPI spec:
 ```
-datamodel-codegen --url https://api.cookieapp.me/openapi.json --output cookie/models.py --input-file-type openapi --use-union-operator --target-python-version 3.9 --use-double-quotes --use-standard-collections --output-model-type pydantic_v2.BaseModel
+datamodel-codegen --url https://api.cookieapp.me/openapi.json --output cookie/models.py --input-file-type openapi --use-union-operator --target-python-version 3.9 --use-double-quotes --use-standard-collections --output-model-type pydantic_v2.BaseModel --disable-timestamp
 ```
